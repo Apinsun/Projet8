@@ -1,0 +1,33 @@
+[project]
+name = "projet8"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Apinsun",email = "aranudpinsun@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "streamlit (>=1.56.0,<2.0.0)",
+    "pandas (<3)",
+    "numpy (>=2.4.4,<3.0.0)",
+    "scikit-learn (>=1.8.0,<2.0.0)",
+    "lightgbm (>=4.6.0,<5.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+training = [
+    "mlflow (>=3.11.1,<4.0.0)",
+    "shap (>=0.51.0,<0.52.0)",
+    "matplotlib (>=3.10.8,<4.0.0)",
+    "seaborn (>=0.13.2,<0.14.0)",
+    "protobuf (<4.0.0)"
+]
+test = [
+    "pytest (>=9.0.3,<10.0.0)"
+]
