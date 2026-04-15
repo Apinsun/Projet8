@@ -17,7 +17,7 @@ def test_racine_api_fonctionne():
     assert response.status_code == 200
     
     # 3b. Assert : On vérifie que le message de bienvenue est exact
-    assert response.json() == {"status": "API en ligne", "message": "Bienvenue sur l'API Prêt à Dépenser"}
+    assert response.json() == {"status": "API en ligne", "message": "Bienvenue sur l'API Prêt à Dépenser -> testez https://apinsun-projet8.hf.space/docs pour la doc interactive !"}
 
 def test_prediction_rejetee_si_credit_negatif():
     """Vérifie que Pydantic bloque un crédit négatif (Erreur 422)"""
