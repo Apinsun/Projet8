@@ -15,6 +15,8 @@ jobs:
     steps:
     # 1. On récupère notre code sur la machine
     - uses: actions/checkout@v4
+      with:
+        lfs: true
 
     # 2. On installe Python
     - name: Set up Python
