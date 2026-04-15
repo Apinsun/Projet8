@@ -56,6 +56,9 @@ jobs:
         # On récupère le mot de passe dans le coffre-fort de GitHub
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
       run: |
+        #Télécharger tout l'historique des fichiers LFS pour éviter le crash
+        git lfs fetch --all
+        git lfs fetch --all
         # On ajoute Hugging Face comme destination
         git remote add space https://apinsun:$HF_TOKEN@huggingface.co/spaces/apinsun/Projet8
         
