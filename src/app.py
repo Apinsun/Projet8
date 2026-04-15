@@ -124,14 +124,9 @@ async def predict_score(client: ClientData):
                         "decision": decision
                     }
                     supabase_client.table("predictions_logs").insert(data_to_log).execute()
-        except Exception as e:
-            print(f"Erreur lors de la sauvegarde Supabase : {e}")
+                except Exception as e:
+                    print(f"Erreur lors de la sauvegarde Supabase : {e}")
 
-    return {
-        "score_defaut": round(proba, 4),
-        "decision": decision,
-        "message": "Le client présente un risque élevé." if decision == "Refusé" else "Dossier solide."
-    }
 
             return {
                 "score_defaut": round(proba, 4),
