@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, ConfigDict
 import pandas as pd
 import joblib
-
+from supabase import create_client, Client
 #permet de bien trouver model_wrapper.py même si on lance l'API depuis un autre dossier
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from model_wrapper import ModelWrapper
@@ -17,6 +17,14 @@ app = FastAPI(
     description="API de scoring crédit utilisant un modèle LightGBM complet",
     version="1.0.0"
 )
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
+# On ne crée le client que si les clés sont présentes
+supabase_client: Client | None = None
+if SUPABASE_URL and SUPABASE_KEY:
+    supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # 2. Chargement de notre piepeline (Modèle + Preprocessing)
 try:
@@ -106,6 +114,24 @@ async def predict_score(client: ClientData):
 
             # 3. La logique métier
             decision = "Refusé" if prediction == 1 else "Accordé"
+
+            if supabase_client:
+                try:
+                    # On logge les données en asynchrone (ou dans un bloc try pour ne pas bloquer l'API si la DB plante)
+                    data_to_log = {
+                        "client_features": client.model_dump(), # Convertit l'objet Pydantic en dictionnaire
+                        "score_defaut": float(proba),
+                        "decision": decision
+                    }
+                    supabase_client.table("predictions_logs").insert(data_to_log).execute()
+        except Exception as e:
+            print(f"Erreur lors de la sauvegarde Supabase : {e}")
+
+    return {
+        "score_defaut": round(proba, 4),
+        "decision": decision,
+        "message": "Le client présente un risque élevé." if decision == "Refusé" else "Dossier solide."
+    }
 
             return {
                 "score_defaut": round(proba, 4),
