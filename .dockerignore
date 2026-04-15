@@ -1,0 +1,12 @@
+.git
+.github
+__pycache__
+tests
+htmlcov
+.pytest_cache
+*.csv
+# On ne copie pas le venv local, Docker créera le sien
+.venv
+.cache
+.env
+cours
