@@ -7,15 +7,17 @@ import mlflow
 import mlflow.sklearn
 import mlflow.pyfunc
 from pathlib import Path
+from sklearn.impute import SimpleImputer
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import roc_auc_score, confusion_matrix, roc_curve
 from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
+from sklearn.compose import ColumnTransformer, make_column_selector
 from sklearn.preprocessing import OrdinalEncoder
 from lightgbm import LGBMClassifier
 import shap
 import joblib
 
+from custom_transformer import FeatureEngineerTransformer
 from model_wrapper import ModelWrapper
 
 # Adaptateur spécifique à MLflow
@@ -120,9 +122,11 @@ def train_and_log_experiment(run_name, pipeline, params, X_train, X_valid, y_tra
 
         # --- GRAPHIQUES SHAP ---
         try:
-            preprocessor = pipeline.named_steps['preprocessor']
             classifier = pipeline.named_steps['classifier']
-            X_valid_transformed = preprocessor.transform(X_valid)
+            
+            # ASTUCE : Applique toutes les étapes du pipeline SAUF la dernière (le classifieur)
+            # Cela permet d'inclure ton feature engineering ET ton preprocessor
+            X_valid_transformed = pipeline[:-1].transform(X_valid)
 
             explainer = shap.Explainer(classifier)
             X_sample = X_valid_transformed.sample(n=min(1000, len(X_valid_transformed)), random_state=42)
@@ -164,7 +168,7 @@ def train_and_log_experiment(run_name, pipeline, params, X_train, X_valid, y_tra
 def main():
 
     BASE_DIR = Path(__file__).resolve().parent.parent
-    data_path = BASE_DIR / "data" / "dataset.csv"
+    data_path = BASE_DIR / "data" / "dataset_raw.csv"
     print(f"Chargement des données depuis {data_path}...")
     df = pd.read_csv(data_path)
 
@@ -191,16 +195,28 @@ def main():
 
     categorical_features = X_train.select_dtypes(include=['object']).columns
 
+    # 1. Préparation des colonnes dynamiques
     preprocessor = ColumnTransformer(
         transformers=[
-            ('cat', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), categorical_features)
+            # Pour le texte : on bouche les trous par la valeur la plus fréquente, puis on encode
+            ('cat', Pipeline([
+                ('imputer', SimpleImputer(strategy='most_frequent')),
+                ('encoder', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1))
+            ]), make_column_selector(dtype_include=['object', 'category'])),
+            
+            # Pour les nombres : on bouche les trous par la médiane 
+            # Ces deux étapes permettent de gérer les données manquantes et éviter un crash en prod -> penser à définir les features vitales
+            ('num', SimpleImputer(strategy='median'), make_column_selector(dtype_exclude=['object', 'category']))
         ],
-        remainder='passthrough'
+        remainder='passthrough',
+        verbose_feature_names_out=False # Garde les noms de colonnes propres
     ).set_output(transform="pandas")
 
+    # 2. Le Super-Pipeline global
     pipeline_lgbm = Pipeline([
-        ('preprocessor', preprocessor),
-        ('classifier', LGBMClassifier(**lgbm_params))
+        ('feature_engineering', FeatureEngineerTransformer()), # Étape 1 : Les calculs
+        ('preprocessor', preprocessor),                        # Étape 2 : Imputations et Encodage
+        ('classifier', LGBMClassifier(**lgbm_params))          # Étape 3 : Le modèle LightGBM
     ])
     
     print("Lancement du modèle LightGBM...")
