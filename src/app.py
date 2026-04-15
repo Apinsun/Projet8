@@ -121,4 +121,4 @@ async def predict_score(client: ClientData):
 # Petite route de test pour vérifier que l'API est vivante
 @app.get("/")
 def read_root():
-    return {"status": "API en ligne", "message": "Bienvenue sur l'API Prêt à Dépenser"}
+    return {"status": "API en ligne", "message": "Bienvenue sur l'API Prêt à Dépenser -> testez https://apinsun-projet8.hf.space/docs pour la doc interactive !"}

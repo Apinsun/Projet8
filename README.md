@@ -15,4 +15,4 @@ Ce projet contient l'API de prédiction pour le calcul du score de probabilité 
 
 L'API est construite avec FastAPI. Vous pouvez tester les différents points d'entrée (endpoints) et consulter la documentation interactive via Swagger UI ici :
 
-👉 **[Accéder à la documentation interactive (/docs)](https://huggingface.co/spaces/apinsun/Projet8/docs)**
+👉 **[Accéder à la documentation interactive (/docs)](https://apinsun-projet8.hf.space/docs)**
