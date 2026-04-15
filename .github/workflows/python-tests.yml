@@ -49,3 +49,15 @@ jobs:
         context: .
         push: false # On ne veut pas l'envoyer sur un registre, juste tester le build
         tags: credit-api:latest
+
+# --- DÉPLOIEMENT SUR HUGGING FACE ---
+    - name: Push to Hugging Face Spaces
+      env:
+        # On récupère le mot de passe dans le coffre-fort de GitHub
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: |
+        # On ajoute Hugging Face comme destination
+        git remote add space https://apinsun:$HF_TOKEN@huggingface.co/spaces/apinsun/Projet8
+        
+        # On force l'envoi de la branche principale
+        git push --force space main
