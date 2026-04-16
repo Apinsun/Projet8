@@ -1,6 +1,9 @@
 import os
 import sys
 from typing import Literal, Optional
+import time
+import json
+import logging
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, ConfigDict
@@ -20,6 +23,10 @@ app = FastAPI(
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
+# Configuration d'un logger basique
+logger = logging.getLogger("api_logger")
+logger.setLevel(logging.INFO)
 
 # On ne crée le client que si les clés sont présentes
 supabase_client: Client | None = None
@@ -66,17 +73,25 @@ class ClientData(BaseModel):
         'Academic degree'
     ] = Field(..., description="Niveau d'éducation")
 
+    # flag pour différencier les données de test
+    is_test: bool = False
+
     # --- 4. Tolérance pour les autres variables (pour le Feature Engineering) ---
     model_config = ConfigDict(extra='allow')
 
 # 4. Le Endpoint (La route)
 @app.post("/predict")
 async def predict_score(client: ClientData):
+    # ⏱️ 1. DÉMARRAGE DU CHRONOMÈTRE
+    start_time = time.perf_counter()
     if pipeline is None:
         raise HTTPException(status_code=500, detail="Le modèle n'est pas disponible.")
 
     # 1. Convertir les données reçues en dictionnaire puis en DataFrame (9 colonnes obligatoires)
     client_dict = client.model_dump()
+    # On retire "is_test" du dictionnaire (le modèle ML n'a pas besoin de le voir)
+    client_dict.pop("is_test", None)
+
     df_client = pd.DataFrame([client_dict])
 
     # 2. On accède au vrai pipeline Scikit-Learn (qui est caché dans notre ModelWrapper)
@@ -115,18 +130,36 @@ async def predict_score(client: ClientData):
             # 3. La logique métier
             decision = "Refusé" if prediction == 1 else "Accordé"
 
+            # ⏱️ 2. ARRÊT DU CHRONOMÈTRE
+            end_time = time.perf_counter()
+            execution_time_ms = round((end_time - start_time) * 1000, 2) # Conversion en millisecondes
+
+            # 📝 3. LE LOGGING STRUCTURÉ (JSON)
+            log_entry = {
+                "event": "api_prediction",
+                "decision": decision,
+                "score": float(proba),
+                "execution_time_ms": execution_time_ms,
+                "status": "success"
+            }
+            # On imprime le dictionnaire sous forme de chaîne JSON stricte
+            print(json.dumps(log_entry))
+
             if supabase_client:
                 try:
                     # On logge les données en asynchrone (ou dans un bloc try pour ne pas bloquer l'API si la DB plante)
                     data_to_log = {
-                        "client_features": client.model_dump(), # Convertit l'objet Pydantic en dictionnaire
+                        "client_features": client_dict, # Convertit l'objet Pydantic en dictionnaire
                         "score_defaut": float(proba),
-                        "decision": decision
+                        "decision": decision,
+                        "execution_time_ms": execution_time_ms,
+                        "is_test": client.is_test
                     }
                     supabase_client.table("predictions_logs").insert(data_to_log).execute()
                 except Exception as e:
                     print(f"Erreur lors de la sauvegarde Supabase : {e}")
 
+            
 
             return {
                 "score_defaut": round(proba, 4),
