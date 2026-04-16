@@ -165,7 +165,8 @@ async def predict_score(client: ClientData):
                 "score_defaut": round(proba, 4),
                 "decision": decision,
                 "seuil_utilise": float(pipeline.threshold) if hasattr(pipeline, "threshold") else 0.5,
-                "message": "Le client présente un risque élevé." if decision == "Refusé" else "Dossier solide."
+                "message": "Le client présente un risque élevé." if decision == "Refusé" else "Dossier solide.",
+                "execution_time_ms": execution_time_ms
             }
 
     except Exception as e:
