@@ -29,20 +29,21 @@ def send_data(drift_mode=False, n_requests=50):
 
     # Nettoyage rapide si besoin (ex: remplacer les NaN par 0 ou les ignorer)
     # Dans la réalité, Pydantic n'aime pas les NaN, on les gère ici
-    sample_df = sample_df.fillna(0) # ou une autre méthode d'imputation selon ton modèle
+    #sample_df = sample_df.fillna(0) # ou une autre méthode d'imputation selon ton modèle
+    sample_df = sample_df.replace({np.nan: None})
 
     for i, row in enumerate(sample_df.to_dict(orient='records')):
         
         # --- LOGIQUE DE SIMULATION DE DRIFT SUR LES VRAIES DONNÉES ---
         if drift_mode:
-            # On multiplie le crédit par 2.5 pour simuler une envolée des demandes
-            if "AMT_CREDIT" in row:
+            # On vérifie que la valeur n'est pas None avant de faire le calcul
+            if row.get("AMT_CREDIT") is not None:
                 row["AMT_CREDIT"] *= 2.5
             
-            # On divise les scores externes par 2 pour simuler des clients plus risqués
-            if "EXT_SOURCE_1" in row:
+            if row.get("EXT_SOURCE_1") is not None:
                 row["EXT_SOURCE_1"] *= 0.5
-            if "EXT_SOURCE_2" in row:
+                
+            if row.get("EXT_SOURCE_2") is not None:
                 row["EXT_SOURCE_2"] *= 0.5
             
 
@@ -64,7 +65,7 @@ def send_data(drift_mode=False, n_requests=50):
         except Exception as e:
             print(f"Erreur de connexion : {e}")
         
-        time.sleep(0.05) # Petite pause pour le serveur
+        time.sleep(0.01) # Petite pause pour le serveur
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Peupler la BDD depuis un CSV.")

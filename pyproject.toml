@@ -8,6 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
 
+[tool.poetry]
+packages = [{include = "src"}]
+
 [tool.poetry.dependencies]
 python = ">=3.12,<4.0"
 # On garde les dépendances de prod légères
