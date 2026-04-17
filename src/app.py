@@ -4,6 +4,7 @@ from typing import Literal, Optional
 import time
 import json
 import logging
+import numpy as np
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, ConfigDict
@@ -13,6 +14,7 @@ from supabase import create_client, Client
 #permet de bien trouver model_wrapper.py même si on lance l'API depuis un autre dossier
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from model_wrapper import ModelWrapper
+from schema import ClientData
 
 # 1. Initialisation de l'API
 app = FastAPI(
@@ -41,44 +43,6 @@ except Exception as e:
     print(f"❌ Erreur lors du chargement du modèle : {e}")
     pipeline = None
 
-# 3. Le Pydantic Model pour valider les données d'entrée
-# Basée sur les features les plus importantes identifiées par SHAP, mais avec une tolérance pour les autres (extra='allow')
-class ClientData(BaseModel):
-    # --- 1. Les Scores Externes (Généralement entre 0 et 1) ---
-
-    #Score optionnel car il y a beaucoup de valeurs manquantes dans notre bdd de base, surtout pour 1 (56%) et 3 (19%)
-    EXT_SOURCE_1: Optional[float] = Field(None, ge=0.0, le=1.0, description="Score externe 1 (Optionnel)")
-    EXT_SOURCE_2: Optional[float] = Field(None, ge=0.0, le=1.0, description="Score externe 2 (Optionnel)")
-    EXT_SOURCE_3: Optional[float] = Field(None, ge=0.0, le=1.0, description="Score externe 3 (Optionnel)")
-
-# --- 2. Les Montants Financiers (Strictement obligatoires) ---
-    # On met ge=0 car on ne peut pas avoir de crédit ou de prix négatif
-    AMT_CREDIT: float = Field(..., ge=0, description="Montant du crédit demandé")
-    AMT_ANNUITY: float = Field(..., ge=0, description="Montant des annuités")
-    AMT_GOODS_PRICE: float = Field(..., ge=0, description="Prix du bien financé")
-
-    # --- 3. Les Informations Démographiques ---
-    # ge=-30000 (environ 82 ans) et le=-7000 (environ 19 ans) pour rester cohérent
-    DAYS_BIRTH: int = Field(..., ge=-30000, le=-7000, description="Âge en jours (négatif)")
-    
-    # Utilisation de Literal pour restreindre aux seules valeurs connues par ton modèle
-    CODE_GENDER: Literal['M', 'F', 'XNA'] = Field(
-        ..., description="Genre du client"
-    )
-    NAME_EDUCATION_TYPE: Literal[
-        'Secondary / secondary special', 
-        'Higher education', 
-        'Incomplete higher', 
-        'Lower secondary', 
-        'Academic degree'
-    ] = Field(..., description="Niveau d'éducation")
-
-    # flag pour différencier les données de test
-    is_test: bool = False
-
-    # --- 4. Tolérance pour les autres variables (pour le Feature Engineering) ---
-    model_config = ConfigDict(extra='allow')
-
 # 4. Le Endpoint (La route)
 @app.post("/predict")
 async def predict_score(client: ClientData):
@@ -91,6 +55,12 @@ async def predict_score(client: ClientData):
     client_dict = client.model_dump()
     # On retire "is_test" du dictionnaire (le modèle ML n'a pas besoin de le voir)
     client_dict.pop("is_test", None)
+    client_dict.pop("SK_ID_CURR", None)
+    # 🧹 LA TRADUCTION DES VIDES
+    # On remplace les None (Python) par des np.nan (Pandas/Maths)
+    for key, value in client_dict.items():
+        if value is None:
+            client_dict[key] = np.nan
 
     df_client = pd.DataFrame([client_dict])
 
@@ -149,7 +119,7 @@ async def predict_score(client: ClientData):
                 try:
                     # On logge les données en asynchrone (ou dans un bloc try pour ne pas bloquer l'API si la DB plante)
                     data_to_log = {
-                        "client_features": client_dict, # Convertit l'objet Pydantic en dictionnaire
+                        "client_features": client.model_dump(exclude={"is_test"}),
                         "score_defaut": float(proba),
                         "decision": decision,
                         "execution_time_ms": execution_time_ms,

@@ -1,0 +1,1206 @@
+{
+    "NAME_CONTRACT_TYPE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Cash loans",
+            "Revolving loans"
+        ]
+    },
+    "CODE_GENDER": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "M",
+            "F",
+            "XNA"
+        ]
+    },
+    "FLAG_OWN_CAR": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "N",
+            "Y"
+        ]
+    },
+    "FLAG_OWN_REALTY": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Y",
+            "N"
+        ]
+    },
+    "CNT_CHILDREN": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 19.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_INCOME_TOTAL": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "float",
+        "min": 25650.0,
+        "max": 117000000.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_CREDIT": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "float",
+        "min": 45000.0,
+        "max": 4050000.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_ANNUITY": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "float",
+        "min": 1615.5,
+        "max": 258025.5,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_GOODS_PRICE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.09,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 40500.0,
+        "max": 4050000.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "NAME_TYPE_SUITE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.42,
+        "est_optionnel": true,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Unaccompanied",
+            "Family",
+            "Spouse, partner",
+            "Children",
+            "Other_A",
+            "Other_B",
+            "Group of people"
+        ]
+    },
+    "NAME_INCOME_TYPE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Working",
+            "State servant",
+            "Commercial associate",
+            "Pensioner",
+            "Unemployed",
+            "Student",
+            "Businessman",
+            "Maternity leave"
+        ]
+    },
+    "NAME_EDUCATION_TYPE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Secondary / secondary special",
+            "Higher education",
+            "Incomplete higher",
+            "Lower secondary",
+            "Academic degree"
+        ]
+    },
+    "NAME_FAMILY_STATUS": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Single / not married",
+            "Married",
+            "Civil marriage",
+            "Widow",
+            "Separated",
+            "Unknown"
+        ]
+    },
+    "NAME_HOUSING_TYPE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "House / apartment",
+            "Rented apartment",
+            "With parents",
+            "Municipal apartment",
+            "Office apartment",
+            "Co-op apartment"
+        ]
+    },
+    "REGION_POPULATION_RELATIVE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "float",
+        "min": 0.00029,
+        "max": 0.072508,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "DAYS_BIRTH": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": -25229.0,
+        "max": -7489.0,
+        "regle_metier": "Strictement négatif ou nul (le=0)"
+    },
+    "DAYS_EMPLOYED": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": -17912.0,
+        "max": 365243.0,
+        "regle_metier": "Peut être positif ou négatif"
+    },
+    "DAYS_REGISTRATION": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "float",
+        "min": -24672.0,
+        "max": 0.0,
+        "regle_metier": "Strictement négatif ou nul (le=0)"
+    },
+    "DAYS_ID_PUBLISH": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": -7197.0,
+        "max": 0.0,
+        "regle_metier": "Strictement négatif ou nul (le=0)"
+    },
+    "OWN_CAR_AGE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 65.99,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 91.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_MOBIL": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_EMP_PHONE": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_WORK_PHONE": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_CONT_MOBILE": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_PHONE": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_EMAIL": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "OCCUPATION_TYPE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 31.35,
+        "est_optionnel": true,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Laborers",
+            "Core staff",
+            "Accountants",
+            "Managers",
+            "Drivers",
+            "Sales staff",
+            "Cleaning staff",
+            "Cooking staff",
+            "Private service staff",
+            "Medicine staff",
+            "Security staff",
+            "High skill tech staff",
+            "Waiters/barmen staff",
+            "Low-skill Laborers",
+            "Realty agents",
+            "Secretaries",
+            "IT staff",
+            "HR staff"
+        ]
+    },
+    "CNT_FAM_MEMBERS": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "float",
+        "min": 1.0,
+        "max": 20.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "REGION_RATING_CLIENT": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 1.0,
+        "max": 3.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "REGION_RATING_CLIENT_W_CITY": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 1.0,
+        "max": 3.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "WEEKDAY_APPR_PROCESS_START": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "WEDNESDAY",
+            "MONDAY",
+            "THURSDAY",
+            "SUNDAY",
+            "SATURDAY",
+            "FRIDAY",
+            "TUESDAY"
+        ]
+    },
+    "HOUR_APPR_PROCESS_START": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 23.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "REG_REGION_NOT_LIVE_REGION": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "REG_REGION_NOT_WORK_REGION": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVE_REGION_NOT_WORK_REGION": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "REG_CITY_NOT_LIVE_CITY": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "REG_CITY_NOT_WORK_CITY": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVE_CITY_NOT_WORK_CITY": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "ORGANIZATION_TYPE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Business Entity Type 3",
+            "School",
+            "Government",
+            "Religion",
+            "Other",
+            "XNA",
+            "Electricity",
+            "Medicine",
+            "Business Entity Type 2",
+            "Self-employed",
+            "Transport: type 2",
+            "Construction",
+            "Housing",
+            "Kindergarten",
+            "Trade: type 7",
+            "Industry: type 11",
+            "Military",
+            "Services",
+            "Security Ministries",
+            "Transport: type 4",
+            "Industry: type 1",
+            "Emergency",
+            "Security",
+            "Trade: type 2",
+            "University",
+            "Transport: type 3",
+            "Police",
+            "Business Entity Type 1",
+            "Postal",
+            "Industry: type 4",
+            "Agriculture",
+            "Restaurant",
+            "Culture",
+            "Hotel",
+            "Industry: type 7",
+            "Trade: type 3",
+            "Industry: type 3",
+            "Bank",
+            "Industry: type 9",
+            "Insurance",
+            "Trade: type 6",
+            "Industry: type 2",
+            "Transport: type 1",
+            "Industry: type 12",
+            "Mobile",
+            "Trade: type 1",
+            "Industry: type 5",
+            "Industry: type 10",
+            "Legal Services",
+            "Advertising",
+            "Trade: type 5",
+            "Cleaning",
+            "Industry: type 13",
+            "Trade: type 4",
+            "Telecom",
+            "Industry: type 8",
+            "Realtor",
+            "Industry: type 6"
+        ]
+    },
+    "EXT_SOURCE_1": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 56.38,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0145681324124455,
+        "max": 0.962692770561306,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "EXT_SOURCE_2": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.21,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 8.173616518884397e-08,
+        "max": 0.8549996664047012,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "EXT_SOURCE_3": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 19.83,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0005272652387098,
+        "max": 0.8960095494948396,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "APARTMENTS_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.75,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "BASEMENTAREA_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 58.52,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "YEARS_BEGINEXPLUATATION_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 48.78,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "YEARS_BUILD_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 66.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "COMMONAREA_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 69.87,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "ELEVATORS_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 53.3,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "ENTRANCES_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.35,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLOORSMAX_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 49.76,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLOORSMIN_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 67.85,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LANDAREA_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 59.38,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVINGAPARTMENTS_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 68.35,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVINGAREA_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.19,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "NONLIVINGAPARTMENTS_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 69.43,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "NONLIVINGAREA_AVG": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 55.18,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "APARTMENTS_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.75,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "BASEMENTAREA_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 58.52,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "YEARS_BEGINEXPLUATATION_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 48.78,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "YEARS_BUILD_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 66.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "COMMONAREA_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 69.87,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "ELEVATORS_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 53.3,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "ENTRANCES_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.35,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLOORSMAX_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 49.76,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLOORSMIN_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 67.85,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LANDAREA_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 59.38,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVINGAPARTMENTS_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 68.35,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVINGAREA_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.19,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "NONLIVINGAPARTMENTS_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 69.43,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "NONLIVINGAREA_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 55.18,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "APARTMENTS_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.75,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "BASEMENTAREA_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 58.52,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "YEARS_BEGINEXPLUATATION_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 48.78,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "YEARS_BUILD_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 66.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "COMMONAREA_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 69.87,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "ELEVATORS_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 53.3,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "ENTRANCES_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.35,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLOORSMAX_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 49.76,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLOORSMIN_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 67.85,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LANDAREA_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 59.38,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVINGAPARTMENTS_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 68.35,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "LIVINGAREA_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 50.19,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "NONLIVINGAPARTMENTS_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 69.43,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "NONLIVINGAREA_MEDI": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 55.18,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FONDKAPREMONT_MODE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 68.39,
+        "est_optionnel": true,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "reg oper account",
+            "org spec account",
+            "reg oper spec account",
+            "not specified"
+        ]
+    },
+    "HOUSETYPE_MODE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 50.18,
+        "est_optionnel": true,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "block of flats",
+            "terraced house",
+            "specific housing"
+        ]
+    },
+    "TOTALAREA_MODE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 48.27,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "WALLSMATERIAL_MODE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 50.84,
+        "est_optionnel": true,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "Stone, brick",
+            "Block",
+            "Panel",
+            "Mixed",
+            "Wooden",
+            "Others",
+            "Monolithic"
+        ]
+    },
+    "EMERGENCYSTATE_MODE": {
+        "type_pandas": "object",
+        "valeurs_manquantes_pct": 47.4,
+        "est_optionnel": true,
+        "type_pydantic": "str",
+        "valeurs_autorisees": [
+            "No",
+            "Yes"
+        ]
+    },
+    "OBS_30_CNT_SOCIAL_CIRCLE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.33,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 348.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "DEF_30_CNT_SOCIAL_CIRCLE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.33,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 34.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "OBS_60_CNT_SOCIAL_CIRCLE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.33,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 344.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "DEF_60_CNT_SOCIAL_CIRCLE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.33,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 24.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "DAYS_LAST_PHONE_CHANGE": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "float",
+        "min": -4292.0,
+        "max": 0.0,
+        "regle_metier": "Strictement négatif ou nul (le=0)"
+    },
+    "FLAG_DOCUMENT_2": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_3": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_4": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_5": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_6": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_7": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_8": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_9": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_10": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_11": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_12": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_13": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_14": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_15": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_16": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_17": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_18": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_19": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_20": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "FLAG_DOCUMENT_21": {
+        "type_pandas": "int64",
+        "valeurs_manquantes_pct": 0.0,
+        "est_optionnel": false,
+        "type_pydantic": "int",
+        "min": 0.0,
+        "max": 1.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_REQ_CREDIT_BUREAU_HOUR": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 13.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 4.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_REQ_CREDIT_BUREAU_DAY": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 13.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 9.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_REQ_CREDIT_BUREAU_WEEK": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 13.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 8.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_REQ_CREDIT_BUREAU_MON": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 13.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 27.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_REQ_CREDIT_BUREAU_QRT": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 13.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 261.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    },
+    "AMT_REQ_CREDIT_BUREAU_YEAR": {
+        "type_pandas": "float64",
+        "valeurs_manquantes_pct": 13.5,
+        "est_optionnel": true,
+        "type_pydantic": "float",
+        "min": 0.0,
+        "max": 25.0,
+        "regle_metier": "Strictement positif ou nul (ge=0)"
+    }
+}
