@@ -119,3 +119,35 @@ def test_prediction_acceptee_si_ext_source1_manquant():
 
     data = response.json()
     assert isinstance(data["score_defaut"], float)
+
+def test_prediction_batch_acceptee():
+    """Vérifie que la route /predict_batch accepte bien une liste de clients et renvoie le bon format"""
+    # 1. On crée deux clients à partir de notre modèle parfait
+    client_1 = VALID_PAYLOAD.copy()
+    
+    client_2 = VALID_PAYLOAD.copy()
+    # On change juste une valeur pour faire genre c'est un client différent
+    client_2["AMT_CREDIT"] = 100000.0 
+
+    # 2. On prépare la liste (le format attendu par la route batch)
+    payload_batch = [client_1, client_2]
+
+    # 3. On envoie à l'API
+    response = client.post("/predict_batch", json=payload_batch)
+    
+    # 4. Assertions : Vérification du statut HTTP
+    assert response.status_code == 200, f"Erreur de l'API: {response.text}"
+
+    # 5. Assertions : Vérification du contenu de la réponse
+    data = response.json()
+    assert "batch_size" in data
+    assert data["batch_size"] == 2
+    
+    assert "predictions" in data
+    assert len(data["predictions"]) == 2
+    
+    # Vérification de la structure de la première prédiction renvoyée
+    premiere_pred = data["predictions"][0]
+    assert "score_defaut" in premiere_pred
+    assert "decision" in premiere_pred
+    assert premiere_pred["decision"] in ["Accordé", "Refusé"]
