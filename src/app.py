@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Literal, Optional
+from typing import Literal, Optional,List
 import time
 import json
 import logging
@@ -143,7 +143,105 @@ async def predict_score(client: ClientData):
         raise HTTPException(status_code=400, detail=f"Erreur lors de la prédiction : {str(e)}")
 
 
+
 # Petite route de test pour vérifier que l'API est vivante
 @app.get("/")
 def read_root():
     return {"status": "API en ligne", "message": "Bienvenue sur l'API Prêt à Dépenser -> testez https://apinsun-projet8.hf.space/docs pour la doc interactive !"}
+
+@app.post("/predict_batch")
+async def predict_batch(clients: List[ClientData]):
+    """
+    Endpoint optimisé pour traiter plusieurs clients d'un coup.
+    """
+    start_time = time.perf_counter()
+    if pipeline is None:
+        raise HTTPException(status_code=500, detail="Le modèle n'est pas disponible.")
+
+    # 1. Préparation des données en masse
+    client_dicts = []
+    is_test_flags = []
+    
+    for c in clients:
+        c_dict = c.model_dump()
+        # On sauvegarde le flag is_test de chaque client pour Supabase
+        is_test_flags.append(c_dict.pop("is_test", False))
+        c_dict.pop("SK_ID_CURR", None)
+        
+        # 🧹 LA TRADUCTION DES VIDES
+        for key, value in c_dict.items():
+            if value is None:
+                c_dict[key] = np.nan
+        client_dicts.append(c_dict)
+
+    # Création du DataFrame d'un seul coup
+    df_clients = pd.DataFrame(client_dicts)
+
+    # 2. Vérification des colonnes
+    sk_pipe = pipeline.pipeline if hasattr(pipeline, "pipeline") else pipeline
+    expected_features = sk_pipe.feature_names_in_
+    
+    colonnes_envoyees = set(df_clients.columns)
+    colonnes_attendues = set(expected_features)
+    colonnes_inconnues = colonnes_envoyees - colonnes_attendues
+    
+    if colonnes_inconnues:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Champs non reconnus par le modèle : {', '.join(colonnes_inconnues)}"
+        )
+
+    # On aligne les colonnes
+    df_clients = df_clients.reindex(columns=expected_features)
+
+    try:
+        # 3. Prédiction vectorisée (ultra rapide)
+        probas = pipeline.predict_proba(df_clients)
+        predictions = pipeline.predict_class(df_clients)
+
+        end_time = time.perf_counter()
+        execution_time_ms = round((end_time - start_time) * 1000, 2)
+
+        # 4. Préparation des logs et de la réponse
+        results = []
+        logs_to_insert = []
+        
+        for i in range(len(clients)):
+            proba = float(probas[i])
+            pred = int(predictions[i])
+            decision = "Refusé" if pred == 1 else "Accordé"
+            
+            # La réponse pour l'utilisateur
+            results.append({
+                "score_defaut": round(proba, 4),
+                "decision": decision,
+                "seuil_utilise": float(pipeline.threshold) if hasattr(pipeline, "threshold") else 0.5,
+                "message": "Le client présente un risque élevé." if decision == "Refusé" else "Dossier solide."
+            })
+
+            # Le log pour Supabase
+            if supabase_client:
+                original_dict = clients[i].model_dump(exclude={"is_test"})
+                logs_to_insert.append({
+                    "client_features": original_dict,
+                    "score_defaut": proba,
+                    "decision": decision,
+                    "execution_time_ms": execution_time_ms / len(clients), # Temps moyen estimé par requête
+                    "is_test": is_test_flags[i]
+                })
+
+        # 5. Bulk Insert Supabase (1 seul appel réseau vers la BDD !)
+        if supabase_client and logs_to_insert:
+            try:
+                supabase_client.table("predictions_logs").insert(logs_to_insert).execute()
+            except Exception as e:
+                print(f"Erreur lors de la sauvegarde Supabase (batch) : {e}")
+
+        return {
+            "execution_time_total_ms": execution_time_ms,
+            "batch_size": len(clients),
+            "predictions": results
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Erreur lors de la prédiction batch : {str(e)}")
