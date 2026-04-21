@@ -28,14 +28,14 @@ data_path = BASE_DIR / "data" / "dataset_raw.csv"
 model_path = BASE_DIR / "model" / "model.pkl"
 
 print("📦 Chargement du modèle...")
-# Modifie le chemin si ton modèle a un nom différent
+
 model = joblib.load(model_path)
 
 print("📊 Chargement d'une ligne de test...")
-# On charge juste la première ligne de ton dataset pour simuler un client
+# On charge juste la première ligne de du dataset pour simuler un client
 df_test = pd.read_csv(data_path, nrows=1)
 
-# On retire la target et l'ID comme le fait ton API
+# On retire la target et l'ID comme on le fait dans l'API
 columns_to_drop = ['SK_ID_CURR', 'TARGET']
 features = df_test.drop(columns=[col for col in columns_to_drop if col in df_test.columns])
 
