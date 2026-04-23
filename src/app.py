@@ -6,7 +6,7 @@ import json
 import logging
 import numpy as np
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel, Field, ConfigDict
 import pandas as pd
 import joblib
@@ -43,9 +43,19 @@ except Exception as e:
     print(f"❌ Erreur lors du chargement du modèle : {e}")
     pipeline = None
 
-# 4. Le Endpoint (La route)
+def save_to_supabase_background(data_to_insert):
+    """Fonction qui tournera en arrière-plan pour ne pas bloquer l'API."""
+    if supabase_client:
+        try:
+            # Cette fonction accepte aussi bien un dictionnaire (predict) qu'une liste de dictionnaires (predict_batch)
+            supabase_client.table("predictions_logs").insert(data_to_insert).execute()
+            print("✅ Logs insérés dans Supabase avec succès (en arrière-plan).")
+        except Exception as e:
+            print(f"❌ Erreur lors de la sauvegarde Supabase (background) : {e}")
+
+# 4. Le Endpoint de prédiction pour un client unique
 @app.post("/predict")
-async def predict_score(client: ClientData):
+async def predict_score(client: ClientData, background_tasks: BackgroundTasks):
     # ⏱️ 1. DÉMARRAGE DU CHRONOMÈTRE
     start_time = time.perf_counter()
     if pipeline is None:
@@ -115,19 +125,14 @@ async def predict_score(client: ClientData):
             # On imprime le dictionnaire sous forme de chaîne JSON stricte
             print(json.dumps(log_entry))
 
-            if supabase_client:
-                try:
-                    # On logge les données en asynchrone (ou dans un bloc try pour ne pas bloquer l'API si la DB plante)
-                    data_to_log = {
-                        "client_features": client.model_dump(exclude={"is_test"}),
-                        "score_defaut": float(proba),
-                        "decision": decision,
-                        "execution_time_ms": execution_time_ms,
-                        "is_test": client.is_test
-                    }
-                    supabase_client.table("predictions_logs").insert(data_to_log).execute()
-                except Exception as e:
-                    print(f"Erreur lors de la sauvegarde Supabase : {e}")
+            data_to_log = {
+                "client_features": client.model_dump(exclude={"is_test"}),
+                "score_defaut": float(proba),
+                "decision": decision,
+                "execution_time_ms": execution_time_ms,
+                "is_test": client.is_test
+            }
+            background_tasks.add_task(save_to_supabase_background, data_to_log)
 
             
 
@@ -150,7 +155,7 @@ def read_root():
     return {"status": "API en ligne", "message": "Bienvenue sur l'API Prêt à Dépenser -> testez https://apinsun-projet8.hf.space/docs pour la doc interactive !"}
 
 @app.post("/predict_batch")
-async def predict_batch(clients: List[ClientData]):
+async def predict_batch(clients: List[ClientData], background_tasks: BackgroundTasks):
     """
     Endpoint optimisé pour traiter plusieurs clients d'un coup.
     """
@@ -231,11 +236,7 @@ async def predict_batch(clients: List[ClientData]):
                 })
 
         # 5. Bulk Insert Supabase (1 seul appel réseau vers la BDD !)
-        if supabase_client and logs_to_insert:
-            try:
-                supabase_client.table("predictions_logs").insert(logs_to_insert).execute()
-            except Exception as e:
-                print(f"Erreur lors de la sauvegarde Supabase (batch) : {e}")
+            background_tasks.add_task(save_to_supabase_background, logs_to_insert)
 
         return {
             "execution_time_total_ms": execution_time_ms,
