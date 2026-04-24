@@ -6,8 +6,8 @@ import argparse
 from pathlib import Path
 
 # L'URL du nouvel endpoint Batch
-#API_URL_BATCH = "https://apinsun-projet8.hf.space/predict_batch"
-API_URL_BATCH = "http://0.0.0.0:7860/predict_batch" # Décommenter pour tester en local avec Docker
+API_URL_BATCH = "https://apinsun-projet8.hf.space/predict_batch"
+#API_URL_BATCH = "http://0.0.0.0:7860/predict_batch" # Décommenter pour tester en local avec Docker
 
 def send_data(drift_mode=False, n_requests=50):
     print(f"🚀 Mode {'DRIFT ⚠️' if drift_mode else 'NORMAL ✅'} | Préparation d'un batch de {n_requests} clients...")
