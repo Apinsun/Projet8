@@ -43,6 +43,17 @@ except Exception as e:
     print(f"❌ Erreur lors du chargement du modèle : {e}")
     pipeline = None
 
+# 3. Extraction des features attendues par le modèle (pour la validation d'entrée)
+
+if pipeline is not None:
+    sk_pipe = pipeline.pipeline if hasattr(pipeline, "pipeline") else pipeline
+    # On stocke sous forme de Tuple (très rapide à lire)
+    EXPECTED_FEATURES = tuple(sk_pipe.feature_names_in_)
+    # On stocke sous forme de Set pour la comparaison mathématique ultra-rapide
+    EXPECTED_FEATURES_SET = set(EXPECTED_FEATURES)
+    # On met le seuil en cache (remplace 0.5 par ton attribut exact si différent)
+    THRESHOLD = float(pipeline.threshold) if hasattr(pipeline, "threshold") else 0.5
+
 def save_to_supabase_background(data_to_insert):
     """Fonction qui tournera en arrière-plan pour ne pas bloquer l'API."""
     if supabase_client:
@@ -56,21 +67,26 @@ def save_to_supabase_background(data_to_insert):
 # 4. Le Endpoint de prédiction pour un client unique
 @app.post("/predict")
 async def predict_score(client: ClientData, background_tasks: BackgroundTasks):
-    # ⏱️ 1. DÉMARRAGE DU CHRONOMÈTRE
+    # ⏱️ 1. DÉMARRAGE DU CHRONOMÈTRE & VÉRIFICATION DES DONNEES D'ENTRÉE
     start_time = time.perf_counter()
     if pipeline is None:
         raise HTTPException(status_code=500, detail="Le modèle n'est pas disponible.")
 
-    # 1. Convertir les données reçues en dictionnaire puis en DataFrame (9 colonnes obligatoires)
-    client_dict = client.model_dump()
-    # On retire "is_test" du dictionnaire (le modèle ML n'a pas besoin de le voir)
-    client_dict.pop("is_test", None)
-    client_dict.pop("SK_ID_CURR", None)
+    # Utiliser Pydantic pour exclure directement les champs inutiles (Plus rapide que .pop())
+    client_dict = client.model_dump(exclude={"is_test", "SK_ID_CURR"})
+
+    # Vérification des colonnes inconnues avec notre Set en cache
+    colonnes_inconnues = set(client_dict.keys()) - EXPECTED_FEATURES_SET
+    
+    if colonnes_inconnues:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Champs non reconnus par le modèle : {', '.join(colonnes_inconnues)}"
+        )
+    
     # 🧹 LA TRADUCTION DES VIDES
     # On remplace les None (Python) par des np.nan (Pandas/Maths)
-    for key, value in client_dict.items():
-        if value is None:
-            client_dict[key] = np.nan
+    client_dict = {k: (np.nan if v is None else v) for k, v in client_dict.items()}
 
     df_client = pd.DataFrame([client_dict])
 
@@ -101,12 +117,8 @@ async def predict_score(client: ClientData, background_tasks: BackgroundTasks):
     # ------------------------------------
 
     try:
-            # 1. On récupère la probabilité de défaut (entre 0 et 1) grâce à la méthode predict_proba de notre ModelWrapper
-            proba = float(pipeline.predict_proba(df_client)[0])
-            
-            # 2. On récupère la décision avec notre seuil optimisé (renvoie [1] ou [0])
-            prediction = int(pipeline.predict_class(df_client)[0])
-
+            #On récupère à la fois la classe et la proba
+            prediction, proba = pipeline.predict_classe_and_proba(df_client)
             # 3. La logique métier
             decision = "Refusé" if prediction == 1 else "Accordé"
 
@@ -134,12 +146,10 @@ async def predict_score(client: ClientData, background_tasks: BackgroundTasks):
             }
             background_tasks.add_task(save_to_supabase_background, data_to_log)
 
-            
-
             return {
                 "score_defaut": round(proba, 4),
                 "decision": decision,
-                "seuil_utilise": float(pipeline.threshold) if hasattr(pipeline, "threshold") else 0.5,
+                "seuil_utilise": THRESHOLD,
                 "message": "Le client présente un risque élevé." if decision == "Refusé" else "Dossier solide.",
                 "execution_time_ms": execution_time_ms
             }
@@ -157,57 +167,44 @@ def read_root():
 @app.post("/predict_batch")
 async def predict_batch(clients: List[ClientData], background_tasks: BackgroundTasks):
     """
-    Endpoint optimisé pour traiter plusieurs clients d'un coup.
+    Endpoint ultra-optimisé pour traiter plusieurs clients d'un coup.
     """
     start_time = time.perf_counter()
     if pipeline is None:
         raise HTTPException(status_code=500, detail="Le modèle n'est pas disponible.")
 
+    # 0. Vérification rapide des colonnes (basée sur le 1er client, Pydantic garantit l'homogénéité)
+    if clients:
+        client_dict_test = clients[0].model_dump(exclude={"is_test", "SK_ID_CURR"})
+        colonnes_inconnues = set(client_dict_test.keys()) - EXPECTED_FEATURES_SET
+        if colonnes_inconnues:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Champs non reconnus par le modèle : {', '.join(colonnes_inconnues)}"
+            )
+
     # 1. Préparation des données en masse
-    client_dicts = []
-    is_test_flags = []
+    # Extraction des flags is_test en une ligne
+    is_test_flags = [c.is_test for c in clients]
     
-    for c in clients:
-        c_dict = c.model_dump()
-        # On sauvegarde le flag is_test de chaque client pour Supabase
-        is_test_flags.append(c_dict.pop("is_test", False))
-        c_dict.pop("SK_ID_CURR", None)
-        
-        # 🧹 LA TRADUCTION DES VIDES
-        for key, value in c_dict.items():
-            if value is None:
-                c_dict[key] = np.nan
-        client_dicts.append(c_dict)
+    # Création de la liste de dictionnaires, exclusion des champs inutiles et traitement des None -> NaN en une passe
+    client_dicts = [
+        {k: (np.nan if v is None else v) for k, v in c.model_dump(exclude={"is_test", "SK_ID_CURR"}).items()}
+        for c in clients
+    ]
 
-    # Création du DataFrame d'un seul coup
-    df_clients = pd.DataFrame(client_dicts)
-
-    # 2. Vérification des colonnes
-    sk_pipe = pipeline.pipeline if hasattr(pipeline, "pipeline") else pipeline
-    expected_features = sk_pipe.feature_names_in_
-    
-    colonnes_envoyees = set(df_clients.columns)
-    colonnes_attendues = set(expected_features)
-    colonnes_inconnues = colonnes_envoyees - colonnes_attendues
-    
-    if colonnes_inconnues:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Champs non reconnus par le modèle : {', '.join(colonnes_inconnues)}"
-        )
-
-    # On aligne les colonnes
-    df_clients = df_clients.reindex(columns=expected_features)
+    # Création du DataFrame et Reindex global d'un seul coup 
+    df_clients = pd.DataFrame(client_dicts, columns=EXPECTED_FEATURES)
 
     try:
-        # 3. Prédiction vectorisée (ultra rapide)
-        probas = pipeline.predict_proba(df_clients)
-        predictions = pipeline.predict_class(df_clients)
+        # Inférence en batch
+        predictions, probas = pipeline.predict_classe_and_proba(df_clients)
 
         end_time = time.perf_counter()
         execution_time_ms = round((end_time - start_time) * 1000, 2)
+        avg_time_per_request = execution_time_ms / len(clients) if clients else 0
 
-        # 4. Préparation des logs et de la réponse
+        # 3. Préparation des logs et de la réponse
         results = []
         logs_to_insert = []
         
@@ -220,7 +217,7 @@ async def predict_batch(clients: List[ClientData], background_tasks: BackgroundT
             results.append({
                 "score_defaut": round(proba, 4),
                 "decision": decision,
-                "seuil_utilise": float(pipeline.threshold) if hasattr(pipeline, "threshold") else 0.5,
+                "seuil_utilise": THRESHOLD,
                 "message": "Le client présente un risque élevé." if decision == "Refusé" else "Dossier solide."
             })
 
@@ -231,11 +228,12 @@ async def predict_batch(clients: List[ClientData], background_tasks: BackgroundT
                     "client_features": original_dict,
                     "score_defaut": proba,
                     "decision": decision,
-                    "execution_time_ms": execution_time_ms / len(clients), # Temps moyen estimé par requête
+                    "execution_time_ms": avg_time_per_request,
                     "is_test": is_test_flags[i]
                 })
 
-        # 5. Bulk Insert Supabase (1 seul appel réseau vers la BDD !)
+        # 4. On insère dans la BDD également par batch
+        if supabase_client and logs_to_insert:
             background_tasks.add_task(save_to_supabase_background, logs_to_insert)
 
         return {

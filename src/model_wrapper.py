@@ -16,3 +16,9 @@ class ModelWrapper:
         # Renvoie 0 ou 1 selon le seuil
         probs = self.predict_proba(X)
         return (probs >= self.threshold).astype(int)
+    
+    def predict_classe_and_proba(self, X):
+        # Renvoie à la fois les classes et les probabilités
+        probs = self.predict_proba(X)
+        classe = (probs >= self.threshold).astype(int)
+        return classe, probs
