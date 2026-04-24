@@ -27,9 +27,7 @@ def send_data(drift_mode=False, n_requests=50):
     # On prend un échantillon au hasard pour simuler de vrais flux
     sample_df = df.sample(n=n_requests, random_state=42) # random_state pour la reproductibilité (optionnel)
 
-    # Nettoyage rapide si besoin (ex: remplacer les NaN par 0 ou les ignorer)
-    # Dans la réalité, Pydantic n'aime pas les NaN, on les gère ici
-    #sample_df = sample_df.fillna(0) # ou une autre méthode d'imputation selon ton modèle
+    # Nettoyage rapide
     sample_df = sample_df.replace({np.nan: None})
 
     for i, row in enumerate(sample_df.to_dict(orient='records')):
@@ -58,10 +56,28 @@ def send_data(drift_mode=False, n_requests=50):
 
         try:
             res = requests.post(API_URL, json=row)
+            
             if res.status_code == 200:
-                print(f"[{i+1}/{n_requests}] Envoyé | Client ID: {client_id} | Score: {res.json().get('score_defaut')}")
+                # 1. On récupère TOUTE la réponse de l'API
+                api_response = res.json()
+                score = api_response.get('score_defaut')
+                decision = api_response.get('decision')
+                seuil = api_response.get('seuil_utilise')
+                message = api_response.get('message')
+                exec_time = api_response.get('execution_time_ms')
+                
+                # 2. On affiche un log complet et formaté
+                # Le client_id est celui qu'on a sauvegardé juste avant le row.pop()
+                status_icon = "🔴" if decision == "Refusé" else "🟢"
+                
+                print(
+                    f"[{i+1}/{n_requests}] {status_icon} Client ID: {client_id} | "
+                    f"Décision: {decision} | Score: {score} (Seuil: {seuil}) | "
+                    f"Temps: {exec_time}ms | Message: {message}"
+                )
             else:
                  print(f"[{i+1}/{n_requests}] ❌ Erreur {res.status_code} : {res.text}")
+                 
         except Exception as e:
             print(f"Erreur de connexion : {e}")
         

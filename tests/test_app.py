@@ -151,3 +151,35 @@ def test_prediction_batch_acceptee():
     assert "score_defaut" in premiere_pred
     assert "decision" in premiere_pred
     assert premiere_pred["decision"] in ["Accordé", "Refusé"]
+
+def test_prediction_batch_rejetee_si_un_client_invalide():
+    """Vérifie que la route batch rejette TOUT le lot si au moins un client a une donnée invalide (ex: crédit négatif)"""
+    client_valide = VALID_PAYLOAD.copy()
+    
+    client_invalide = VALID_PAYLOAD.copy()
+    client_invalide["AMT_CREDIT"] = -5000.0  # Pydantic doit bloquer car ge=0
+    
+    # On envoie un lot mixte (1 bon, 1 mauvais)
+    payload_batch = [client_valide, client_invalide]
+
+    response = client.post("/predict_batch", json=payload_batch)
+    
+    # L'API entière doit refuser la transaction
+    assert response.status_code == 422
+    assert "AMT_CREDIT" in response.text
+
+
+def test_prediction_batch_rejetee_si_colonne_inconnue():
+    """Vérifie que la route batch rejette le lot si un client possède une colonne non autorisée (extra forbid)"""
+    client_valide = VALID_PAYLOAD.copy()
+    
+    client_fantome = VALID_PAYLOAD.copy()
+    client_fantome["VARIABLE_INVENTEE"] = 42 # Pydantic doit bloquer via extra="forbid"
+    
+    payload_batch = [client_valide, client_fantome]
+
+    response = client.post("/predict_batch", json=payload_batch)
+    
+    assert response.status_code == 422
+    assert "Extra inputs are not permitted" in response.text
+    assert "VARIABLE_INVENTEE" in response.text
