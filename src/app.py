@@ -119,6 +119,10 @@ async def predict_score(client: ClientData, background_tasks: BackgroundTasks):
     try:
             #On récupère à la fois la classe et la proba
             prediction, proba = pipeline.predict_classe_and_proba(df_client)
+
+            prediction = int(prediction[0])
+            proba = float(proba[0])
+            
             # 3. La logique métier
             decision = "Refusé" if prediction == 1 else "Accordé"
 
@@ -199,6 +203,8 @@ async def predict_batch(clients: List[ClientData], background_tasks: BackgroundT
     try:
         # Inférence en batch
         predictions, probas = pipeline.predict_classe_and_proba(df_clients)
+
+    
 
         end_time = time.perf_counter()
         execution_time_ms = round((end_time - start_time) * 1000, 2)
